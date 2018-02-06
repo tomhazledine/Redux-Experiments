@@ -1,9 +1,8 @@
 // import React from 'react';
 // import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
-// import expect from 'expect';
-// import deepFreeze from 'deep-freeze';
+import { createStore, combineReducers } from 'redux';
 
+// Todo reducer (called by Todos reducer)
 const todo = (state, action) => {
     switch (action.type) {
         case 'ADD_TODO':
@@ -26,6 +25,7 @@ const todo = (state, action) => {
     }
 };
 
+// Todos reducer
 const todos = (state = [], action) => {
     switch (action.type) {
         case 'ADD_TODO':
@@ -37,6 +37,7 @@ const todos = (state = [], action) => {
     }
 };
 
+// Visibility reducer
 const visibilityFilter = (state = 'SHOW_ALL', action) => {
     switch (action.type) {
         case 'SET_VISIBILITY_FILTER':
@@ -46,12 +47,11 @@ const visibilityFilter = (state = 'SHOW_ALL', action) => {
     }
 };
 
-const todoApp = (state = {}, action) => {
-    return {
-        todos: todos(state.todos, action),
-        visibilityFilter: visibilityFilter(state.visibilityFilter, action)
-    };
-};
+// Combined reducer
+const todoApp = combineReducers({
+    todos,
+    visibilityFilter
+});
 
 const store = createStore(todoApp);
 console.log(store.getState());
