@@ -1,13 +1,61 @@
-import { counter } from './index.js';
+import { todos } from './index';
 
-test('Counter', () => {
-    expect(counter(0, { type: 'INCREMENT' })).toEqual(1);
+const testAddTodo = () => {
+    const stateBefore = [];
+    const action = {
+        type: 'ADD_TODO',
+        id: 0,
+        text: 'Learn Redux'
+    };
+    const stateAfter = [
+        {
+            id: 0,
+            text: 'Learn Redux',
+            completed: false
+        }
+    ];
 
-    expect(counter(1, { type: 'INCREMENT' })).toEqual(2);
+    deepFreeze(stateBefore);
+    deepFreeze(action);
 
-    expect(counter(2, { type: 'DECREMENT' })).toEqual(1);
+    expect(todos(stateBefore, action)).toEqual(stateAfter);
+};
 
-    expect(counter(1, { type: 'SOMETHING' })).toEqual(1);
+const testToggleTodo = () => {
+    const stateBefore = [
+        {
+            id: 0,
+            text: 'Learn Redux',
+            completed: false
+        },
+        {
+            id: 1,
+            text: 'Go Shopping',
+            completed: false
+        }
+    ];
+    const action = {
+        type: 'TOGGLE_TODO',
+        id: 1
+    };
+    const stateAfter = [
+        {
+            id: 0,
+            text: 'Learn Redux',
+            completed: false
+        },
+        {
+            id: 1,
+            text: 'Go Shopping',
+            completed: true
+        }
+    ];
 
-    expect(counter(undefined, {})).toEqual(0);
-});
+    deepFreeze(stateBefore);
+    deepFreeze(action);
+
+    expect(todos(stateBefore, action)).toEqual(stateAfter);
+};
+
+testAddTodo();
+testToggleTodo();
