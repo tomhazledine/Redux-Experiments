@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import VisibleTodoList from './components/VisibleTodoList';
+import AddTodo from './components/AddTodo';
 
 // Todo reducer (called by Todos reducer)
 const todo = (state, action) => {
@@ -113,36 +114,6 @@ const Footer = () => (
         <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
     </p>
 );
-
-const AddTodo = (props, { store }) => {
-    let input;
-    return (
-        <div>
-            <input
-                ref={node => {
-                    input = node;
-                }}
-            />
-            <button
-                onClick={() => {
-                    store.dispatch({
-                        type: 'ADD_TODO',
-                        id: nextTodoId++,
-                        text: input.value
-                    });
-                    input.value = '';
-                }}
-            >
-                Add Todo
-            </button>
-        </div>
-    );
-};
-AddTodo.contextTypes = {
-    store: PropTypes.object
-};
-
-let nextTodoId = 0;
 const TodoApp = () => (
     <div>
         <AddTodo />
