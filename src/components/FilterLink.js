@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 const Link = ({ active, children, onClick }) => {
     if (active) {
@@ -18,36 +18,22 @@ const Link = ({ active, children, onClick }) => {
     );
 };
 
-class FilterLink extends React.Component {
-    componentDidMount() {
-        const { store } = this.context;
-        store.subscribe(() => this.forceUpdate());
-    }
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-    render() {
-        const props = this.props;
-        const { store } = this.context;
-        const state = store.getState();
-
-        return (
-            <Link
-                active={props.filter === state.visibilityFilter}
-                onClick={() =>
-                    store.dispatch({
-                        type: 'SET_VISIBILITY_FILTER',
-                        filter: props.filter
-                    })
-                }
-            >
-                {props.children}
-            </Link>
-        );
-    }
-}
-FilterLink.contextTypes = {
-    store: PropTypes.object
+// Container function connects the store to the TodoList component
+const mapStateToProps = (state, ownProps) => {
+    return {
+        active: ownProps.filter === state.visibilityFilter
+    };
 };
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        onClick: () => {
+            dispatch({
+                type: 'SET_VISIBILITY_FILTER',
+                filter: ownProps.filter
+            });
+        }
+    };
+};
+const FilterLink = connect(mapStateToProps, mapDispatchToProps)(Link);
 
 export default FilterLink;
