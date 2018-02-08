@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import VisibleTodoList from './components/VisibleTodoList';
 
 // Todo reducer (called by Todos reducer)
 const todo = (state, action) => {
@@ -113,23 +114,6 @@ const Footer = () => (
     </p>
 );
 
-const Todo = ({ onClick, text, completed }) => (
-    <li
-        onClick={onClick}
-        style={{
-            textDecoration: completed ? 'line-through' : 'none'
-        }}
-    >
-        {text}
-    </li>
-);
-
-const TodoList = ({ todos, onTodoClick }) => (
-    <ul>
-        {todos.map(todo => <Todo key={todo.id} {...todo} onClick={() => onTodoClick(todo.id)} />)}
-    </ul>
-);
-
 const AddTodo = (props, { store }) => {
     let input;
     return (
@@ -157,39 +141,6 @@ const AddTodo = (props, { store }) => {
 AddTodo.contextTypes = {
     store: PropTypes.object
 };
-
-const getVisibleTodos = (todos, filter) => {
-    switch (filter) {
-        case 'SHOW_ALL':
-            return todos;
-        case 'SHOW_COMPLETED':
-            return todos.filter(t => t.completed);
-        case 'SHOW_ACTIVE':
-            return todos.filter(t => !t.completed);
-        default:
-            return todos;
-    }
-};
-
-const mapStateToProps = state => {
-    return {
-        todos: getVisibleTodos(state.todos, state.visibilityFilter)
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onTodoClick: id => {
-            dispatch({
-                type: 'TOGGLE_TODO',
-                id
-            });
-        }
-    };
-};
-
-// Container function connects the store to the TodoList component
-const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(TodoList);
 
 let nextTodoId = 0;
 const TodoApp = () => (
